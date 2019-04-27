@@ -12,16 +12,49 @@
 'use strict';
 document.addEventListener("DOMContentLoaded", () => {
 	const $textarea = document.getElementById('input_comment');
-	if ($textarea === null) { return; }
+	const $form = document.getElementById('comment_form');
+	const $actions = document.querySelector('#comment_form .form-actions');
+	if ($form === null || $textarea === null || $actions === null) { return; }
 
 	$textarea.addEventListener('input', () => {
-		console.log($textarea.scrollHeight);
 		$textarea.style.height = 'auto';
 		$textarea.style.height = $textarea.scrollHeight + 'px';
 
 	}, false);
 
-	$textarea.style.boxSizing = 'content-box';
+	let br = document.querySelector('#comment_form > br');
+	br.parentNode.removeChild(br);
+
+	$form.setAttribute('style', `position: sticky; bottom: 0`);
+
+	const style = window.getComputedStyle($textarea, null);
+	const padding = parseInt(style.getPropertyValue('padding-left')) + parseInt(style.getPropertyValue('padding-right')) + 2;
+	$textarea.setAttribute('style', `
+										min-height: 100px;
+										width: calc(100% - ${padding}px) !important;
+										box-sizing: content-box;
+										overflow: hidden;
+										border-radius: 0;
+										resize: none;
+										z-index: 5;
+										position: relative;`
+	);
+
+	$actions.setAttribute('style', `margin: 0`);
+	$actions.innerHTML += `<label style="float: right"><input id="comment_form_stickyInput" type="checkbox" autocomplete="off"> закрепить</label>`;
+	const $sticky = document.getElementById('comment_form_stickyInput');
+	const key = 'comment-form-sticky';
+
+	const recheck = () => {
+		$form.style.position = $sticky.checked ? 'sticky' : 'static';
+		localStorage[$sticky.checked ? 'removeItem' : 'setItem'](key, '');
+		console.log($sticky.checked);
+	};
+
+	$sticky.checked = localStorage.getItem(key) === null;
+	recheck();
+
+	$sticky.addEventListener('change', recheck);
 
 	$textarea.dispatchEvent(new Event('input', {
 		'bubbles': false,
