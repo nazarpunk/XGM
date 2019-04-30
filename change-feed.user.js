@@ -19,8 +19,6 @@ const $wrap = $('#feeddiv');
 const $tabs = $(`${tabid}1, ${tabid}2, ${tabid}3, ${tabid}4, ${tabid}5`);
 let $tab;
 
-console.log('d',);
-
 const color = $('#styleboot').attr('href').indexOf('dark.css') > 0 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(170, 170, 170, 0.15)';
 
 $(`<style>
